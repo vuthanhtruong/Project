@@ -1,6 +1,5 @@
 package com.example.demoproject.GET;
 
-
 import com.example.demoproject.OOP.Admin;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
