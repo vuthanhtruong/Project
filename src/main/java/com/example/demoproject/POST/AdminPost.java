@@ -177,7 +177,7 @@ public class AdminPost {
         // Lưu vào database
         entityManager.persist(student);
 
-        return "redirect:/DanhSachHocSinh";
+        return "redirect:Admin/DanhSachHocSinh";
     }
     @PostMapping("/ThemNhanVien")
     public String ThemNhanVien(@RequestParam String EmployeeID,
@@ -229,7 +229,7 @@ public class AdminPost {
 
         entityManager.persist(employees);
 
-        return "redirect:/DanhSachNhanVien";
+        return "redirect:Admin/DanhSachNhanVien";
     }
 
     @PostMapping("/SuaHocSinh/{id}")
@@ -265,7 +265,7 @@ public class AdminPost {
         // Lưu thay đổi
         entityManager.merge(student);
 
-        return "redirect:/DanhSachHocSinh";
+        return "redirect:Admin/DanhSachHocSinh";
     }
     @PostMapping("/SuaGiaoVien/{id}")
     public String SuaGiaoVien(@PathVariable("id") String id,
@@ -278,7 +278,7 @@ public class AdminPost {
         // Tìm giáo viên theo ID
         Teachers teacher = entityManager.find(Teachers.class, id);
         if (teacher == null) {
-            return "redirect:/DanhSachGiaoVien"; // Nếu không tìm thấy thì quay về danh sách
+            return "redirect:Admin/DanhSachGiaoVien"; // Nếu không tìm thấy thì quay về danh sách
         }
 
         // Cập nhật thông tin giáo viên
@@ -302,7 +302,7 @@ public class AdminPost {
         // Lưu thay đổi vào database
         entityManager.merge(teacher);
 
-        return "redirect:/DanhSachGiaoVien";
+        return "redirect:Admin/DanhSachGiaoVien";
     }
     @PostMapping("/SuaNhanVien/{id}")
     public String CapNhatNhanVien(@PathVariable("id") String id,
@@ -316,6 +316,73 @@ public class AdminPost {
 
             entityManager.merge(existingEmployee);
         }
-        return "redirect:/DanhSachNhanVien";
+        return "redirect:Admin/DanhSachNhanVien";
+    }
+    @PostMapping("/TimKiemHocSinh")
+    public String TimKiemHocSinh(@RequestParam("searchType") String searchType, @RequestParam("keyword") String keyword
+            ,ModelMap ModelMap) {
+        if(searchType.equalsIgnoreCase("name")){
+            List<Students> searchResults = entityManager.createQuery(
+                            "SELECT s FROM Students s " +
+                                    "WHERE LOWER(s.firstName) LIKE LOWER(:keyword) " +
+                                    "OR LOWER(s.lastName) LIKE LOWER(:keyword) " +
+                                    "OR LOWER(CONCAT(s.firstName, ' ', s.lastName)) LIKE LOWER(:keyword)", Students.class)
+                    .setParameter("keyword", "%" + keyword + "%")
+                    .getResultList();
+            ModelMap.addAttribute("searchResults", searchResults);
+        }
+        else if(searchType.equalsIgnoreCase("id")){
+            Students students = entityManager.find(Students.class, keyword);
+            ModelMap.addAttribute("students", students);
+        }
+        return "DanhSachTimKiemHocSinh";
+    }
+    @PostMapping("/TimKiemGiaoVien")
+    public String TimKiemGiaoVien(@RequestParam("searchType") String searchType,
+                                  @RequestParam("keyword") String keyword,
+                                  ModelMap model) {
+        List<Teachers> searchResults;
+
+        if (searchType.equalsIgnoreCase("name")) {
+            searchResults = entityManager.createQuery(
+                            "SELECT t FROM Teachers t " +
+                                    "WHERE LOWER(t.firstName) LIKE LOWER(:keyword) " +
+                                    "OR LOWER(t.lastName) LIKE LOWER(:keyword) " +
+                                    "OR LOWER(CONCAT(t.firstName, ' ', t.lastName)) LIKE LOWER(:keyword)", Teachers.class)
+                    .setParameter("keyword", "%" + keyword + "%")
+                    .getResultList();
+        } else if (searchType.equalsIgnoreCase("id")) {
+            Teachers teacher = entityManager.find(Teachers.class, keyword);
+            searchResults = (teacher != null) ? List.of(teacher) : List.of();
+        } else {
+            searchResults = List.of();
+        }
+
+        model.addAttribute("teachers", searchResults);
+        return "DanhSachTimKiemGiaoVien";
+    }
+    @PostMapping("/TimKiemNhanVien")
+    public String TimKiemNhanVien(@RequestParam("searchType") String searchType,
+                                  @RequestParam("keyword") String keyword,
+                                  ModelMap model) {
+        List<Employees> searchResults;
+
+        if (searchType.equalsIgnoreCase("name")) {
+            searchResults = entityManager.createQuery(
+                            "SELECT e FROM Employees e " +
+                                    "WHERE LOWER(e.firstName) LIKE LOWER(:keyword) " +
+                                    "OR LOWER(e.lastName) LIKE LOWER(:keyword) " +
+                                    "OR LOWER(CONCAT(e.firstName, ' ', e.lastName)) LIKE LOWER(:keyword)", Employees.class)
+                    .setParameter("keyword", "%" + keyword + "%")
+                    .getResultList();
+        } else if (searchType.equalsIgnoreCase("id")) {
+            Employees employee = entityManager.find(Employees.class, keyword);
+            searchResults = (employee != null) ? List.of(employee) : List.of();
+        } else {
+            searchResults = List.of();
+        }
+
+        model.addAttribute("employees", searchResults);
+        return "DanhSachTimKiemNhanVien";
     }
 }

@@ -36,12 +36,12 @@ public class AdminGet {
     @GetMapping("/DangXuatAdmin")
     public String DangXuatAdmin(HttpSession session) {
         session.invalidate(); // Hủy toàn bộ session
-        return "redirect:Admin/DangNhapAdmin";
+        return "redirect:/DangNhapAdmin";
     }
     @GetMapping("/DanhSachGiaoVien")
     public String DanhSachGiaoVien(ModelMap model, HttpSession session) {
         if(session.getAttribute("AdminID") == null) {
-            return "redirect:Admin/DangNhapAdmin";
+            return "redirect:/DangNhapAdmin";
         }
         List<Teachers> teachers = entityManager.createQuery("from Teachers", Teachers.class).getResultList();
         model.addAttribute("teachers",teachers);
@@ -50,7 +50,7 @@ public class AdminGet {
     @GetMapping("/ThemGiaoVien")
     public String ThemGiaoVien(ModelMap model, HttpSession session) {
         if(session.getAttribute("AdminID") == null) {
-            return "redirect:Admin/DangNhapAdmin";
+            return "redirect:/DangNhapAdmin";
         }
         List<Employees> employees = entityManager.createQuery("from Employees", Employees.class).getResultList();
         model.addAttribute("employees",employees);
@@ -68,16 +68,16 @@ public class AdminGet {
     @GetMapping("/ThemHocSinh")
     public String ThemHocSinh(ModelMap model, HttpSession session) {
         if(session.getAttribute("AdminID") == null) {
-            return "redirect:Admin/DangNhapAdmin";
+            return "redirect:/DangNhapAdmin";
         }
         List<Employees> employees = entityManager.createQuery("from Employees", Employees.class).getResultList();
         model.addAttribute("employees",employees);
-        return "Admin/ThemHocSinh";
+        return "/ThemHocSinh";
     }
     @GetMapping("DanhSachNhanVien")
     public String DanhSachNhanVien(ModelMap model, HttpSession session) {
         if(session.getAttribute("AdminID") == null) {
-            return "redirect:Admin/DangNhapAdmin";
+            return "redirect:/DangNhapAdmin";
         }
         List<Employees> employees = entityManager.createQuery("from Employees", Employees.class).getResultList();
         model.addAttribute("employees",employees);
@@ -87,14 +87,14 @@ public class AdminGet {
     @GetMapping("/ThemNhanVien")
     public String ThemNhanVien(HttpSession session, ModelMap model) {
         if(session.getAttribute("AdminID") == null) {
-            return "redirect:Admin/DangNhapAdmin";
+            return "redirect:/DangNhapAdmin";
         }
-        return "ThemNhanVien";
+        return "/ThemNhanVien";
     }
     @GetMapping("/XoaGiaoVien/{id}")
     public String XoaGiaoVien(@PathVariable("id") String id, HttpSession session, ModelMap model) {
         if(session.getAttribute("AdminID") == null) {
-            return "redirect:Admin/DangNhapAdmin";
+            return "redirect:/DangNhapAdmin";
         }
         Teachers teacher = entityManager.find(Teachers.class, id);
         if (teacher != null) {
@@ -105,7 +105,7 @@ public class AdminGet {
     @GetMapping("/XoaHocSinh/{id}")
     public String XoaHocSinh(@PathVariable("id") String id, HttpSession session, ModelMap model) {
         if(session.getAttribute("AdminID") == null) {
-            return "redirect:Admin/DangNhapAdmin";
+            return "redirect:/DangNhapAdmin";
         }
         Students student = entityManager.find(Students.class, id);
         entityManager.remove(student);
@@ -115,7 +115,7 @@ public class AdminGet {
     @GetMapping("/XoaNhanVien/{id}")
     public String XoaNhanVien(@PathVariable("id") String id, HttpSession session, ModelMap model) {
         if(session.getAttribute("AdminID") == null) {
-            return "redirect:Admin/DangNhapAdmin";
+            return "redirect:/DangNhapAdmin";
         }
         Employees employee = entityManager.find(Employees.class, id);
         if (employee != null) {
@@ -134,32 +134,32 @@ public class AdminGet {
     @GetMapping("/SuaHocSinh/{id}")
     public String SuaHocSinh(ModelMap model, @PathVariable("id") String id, HttpSession session) {
         if(session.getAttribute("AdminID") == null) {
-            return "redirect:Admin/DangNhapAdmin";
+            return "redirect:/DangNhapAdmin";
         }
         Students student = entityManager.find(Students.class, id);
         List<Employees> employees=entityManager.createQuery("from Employees", Employees.class).getResultList();
         model.addAttribute("student",student);
         model.addAttribute("employees",employees);
-        return "Admin/SuaHocSinh";
+        return "/SuaHocSinh";
     }
     @GetMapping("/SuaGiaoVien/{id}")
     public String SuaGiaoVien(ModelMap model, @PathVariable("id") String id, HttpSession session) {
         if(session.getAttribute("AdminID") == null) {
-            return "redirect:Admin/DangNhapAdmin";
+            return "redirect:/DangNhapAdmin";
         }
         List<Employees> employees=entityManager.createQuery("from Employees", Employees.class).getResultList();
         Teachers teachers = entityManager.find(Teachers.class, id);
         model.addAttribute("teachers",teachers);
         model.addAttribute("employees",employees);
-        return "Admin/SuaGiaoVien";
+        return "/SuaGiaoVien";
     }
     @GetMapping("/SuaNhanVien/{id}")
     public String SuaAdmin(ModelMap model, @PathVariable("id") String id, HttpSession session) {
         if(session.getAttribute("AdminID") == null) {
-            return "redirect:Admin/DangNhapAdmin";
+            return "redirect:/DangNhapAdmin";
         }
         Employees employee = entityManager.find(Employees.class, id);
         model.addAttribute("employees",employee);
-        return "Admin/SuaNhanVien";
+        return "/SuaNhanVien";
     }
 }
